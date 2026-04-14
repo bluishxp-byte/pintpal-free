@@ -1,9 +1,9 @@
-// PintPal Service Worker
-const CACHE_NAME = 'pintpal-v1';
+// PintPal Free Service Worker
+const CACHE_NAME = 'pintpal-free-v1';
 const ASSETS_TO_CACHE = [
-  '/pintpal/',
-  '/pintpal/index.html',
-  '/pintpal/manifest.json',
+  '/pintpal-free/',
+  '/pintpal-free/index.html',
+  '/pintpal-free/manifest.json',
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css'
 ];
@@ -13,7 +13,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('🍺 PintPal: Caching assets');
+        console.log('🍺 PintPal Free: Caching assets');
         return cache.addAll(ASSETS_TO_CACHE);
       })
       .then(() => self.skipWaiting())
@@ -27,7 +27,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            console.log('🍺 PintPal: Deleting old cache', cacheName);
+            console.log('🍺 PintPal Free: Deleting old cache', cacheName);
             return caches.delete(cacheName);
           }
         })
@@ -67,7 +67,7 @@ self.addEventListener('fetch', (event) => {
           .catch(() => {
             // Offline fallback for HTML pages
             if (event.request.headers.get('accept').includes('text/html')) {
-              return caches.match('/pintpal/');
+              return caches.match('/pintpal-free/');
             }
           });
       })
