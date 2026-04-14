@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>🍺 PintPal · Tracker</title>
+  <link rel="manifest" href="/pintpal/manifest.json">
+  <link rel="apple-touch-icon" href="/pintpal/icon-512.png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; font-family: 'Segoe UI', Roboto, -apple-system, sans-serif; }
+    body {
+      background: linear-gradient(145deg, #f9f3e8 0%, #f0e7d6 100%);
+      min-height: 100vh;
+      padding: 12px 10px 30px;
+      display: flex;
+      justify-content: center;
+      transition: background 0.3s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body.dark {
+      background: linear-gradient(145deg, #1e1a14 0%, #2a231b 100%);
+      color: #f0e0c8;
+    }
+    #app { max-width: 600px; width: 100%; }
+    h1 {
+      display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 2rem;
+      color: #2c1e0f; text-shadow: 2px 2px 0 #e7d7b4; margin-bottom: 8px;
+    }
+    body.dark h1 { color: #e6d5b8; text-shadow: 2px 2px 0 #3f2e1b; }
+    .card {
+      background: rgba(255, 250, 240, 0.95); backdrop-filter: blur(8px); border-radius: 28px;
+      padding: 18px 16px; margin-bottom: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      border: 1px solid #f1e3ca;
+    }
+    body.dark .card { background: rgba(40, 32, 24, 0.9); border-color: #5e4a33; }
+    .flex-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .space-between { display: flex; justify-content: space-between; align-items: center; }
+    .session-badge { background: #2c1e0f; color: #fbe9c3; padding: 6px 14px; border-radius: 40px; font-weight: 600; font-size: 0.9rem; }
+    .timer { font-size: 1.8rem; font-weight: 800; color: #3b2a17; }
+    body.dark .timer { color: #e6cba2; }
+    .drink-counter-large { font-size: 3.2rem; font-weight: 900; color: #1f1409; }
+    body.dark .drink-counter-large { color: #f3e0c2; }
+    .size-toggle { display: flex; background: #e3d3bb; border-radius: 60px; padding: 4px; margin: 12px 0; }
+    .size-btn {
+      flex: 1; text-align: center; padding: 14px 8px; border-radius: 60px; font-weight: 700;
+      font-size: 1.2rem; border: none; background: transparent; color: #3e2c16; cursor: pointer;
+      transition: 0.15s; -webkit-touch-callout: none;
+    }
+    .size-btn.active { background: #a5712e; color: white; box-shadow: 0 4px 8px rgba(165,113,46,0.3); }
+    .btn {
+      background: #3e2c16; border: none; color: #fcf3e2; padding: 16px 20px; border-radius: 60px;
+      font-weight: 700; font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 0 #1f1409;
+      transition: 0.1s; border: 1px solid #ad8b5f; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      touch-action: manipulation; min-height: 56px;
+    }
+    .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #1f1409; }
+    .btn-outline { background: transparent; color: #2c1e0f; box-shadow: none; border: 2px solid #a5712e; }
+    body.dark .btn-outline { color: #e6cba2; border-color: #b88633; }
+    .btn-large { width: 100%; padding: 22px; font-size: 2rem; background: #b88633; color: white; }
+    .drink-list { max-height: 200px; overflow-y: auto; margin: 15px 0; padding-right: 4px; }
+    .drink-item {
+      display: flex; justify-content: space-between; padding: 10px 14px; background: #fff6e8;
+      border-radius: 30px; margin-bottom: 8px; border-left: 8px solid #b88633; font-size: 1rem;
+    }
+    body.dark .drink-item { background: #3b2e20; color: #f0dcc0; }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+    .stat-box { background: #fff6e8; border-radius: 20px; padding: 14px 6px; text-align: center; }
+    body.dark .stat-box { background: #3f3222; }
+    .stat-value { font-size: 2rem; font-weight: 800; color: #2b1b0b; }
+    body.dark .stat-value { color: #eaceaa; }
+    .stat-label { font-size: 0.8rem; text-transform: uppercase; color: #6f5437; }
+    body.dark .stat-label { color: #b89f7e; }
+    .location-input { width: 100%; padding: 16px; border-radius: 60px; border: 2px solid #dbbc91; background: white; font-size: 1rem; }
+    body.dark .location-input { background: #2c231c; border-color: #7a6244; color: #f0e0c8; }
+    .past-session-item {
+      background: #f2e5d2; border-radius: 20px; padding: 12px 14px; margin-bottom: 8px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    body.dark .past-session-item { background: #4a3d2f; }
+    .fun-fact { background: #dcc29e; padding: 12px 16px; border-radius: 60px; color: #1f1409; text-align: center; margin: 12px 0; font-weight: 500; }
+    body.dark .fun-fact { background: #5f4e3a; color: #f0dbc2; }
+    .insight-selector { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    select {
+      padding: 12px 16px; border-radius: 40px; border: 2px solid #b88633; background: #fff6e8;
+      font-weight: 600; font-size: 1rem; color: #2c1e0f; cursor: pointer; outline: none;
+      -webkit-appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="%23a5712e" d="M7 10l5 5 5-5z"/></svg>');
+      background-repeat: no-repeat; background-position: right 12px center; padding-right: 40px;
+    }
+    body.dark select { background-color: #3a2e22; color: #f0dcc0; border-color: #a5712e; }
+    .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .cal-nav-btn {
+      background: #e3d3bb; border: none; width: 44px; height: 44px; border-radius: 30px;
+      font-size: 1.4rem; font-weight: bold; color: #2c1e0f; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; touch-action: manipulation;
+    }
+    body.dark .cal-nav-btn { background: #5a4a36; color: #f0dcc0; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+    .cal-day-header { font-weight: 700; color: #6f4e2b; padding: 8px 0; font-size: 0.9rem; }
+    body.dark .cal-day-header { color: #c8aa82; }
+    .cal-day {
+      background: #f3eadc; border-radius: 20px; padding: 10px 0; font-weight: 600;
+      color: #3b2a17; cursor: pointer; transition: 0.1s; font-size: 0.95rem; touch-action: manipulation;
+    }
+    body.dark .cal-day { background: #4c3f30; color: #e6d5b8; }
+    .cal-day.has-drinks { background: #b88633; color: white; }
+    .cal-day.today { border: 3px solid #a5712e; }
+    .chart-container { margin-top: 10px; height: 190px; width: 100%; }
+    canvas { max-height: 190px; width: 100% !important; }
+    .live-avg { background: #e9dac8; padding: 8px 14px; border-radius: 40px; display: inline-block; font-weight: 600; margin-top: 8px; font-size: 0.9rem; }
+    body.dark .live-avg { background: #5f4e3a; }
+    .streak-badge { background: #2c1e0f; color: #f3d9a4; padding: 4px 12px; border-radius: 30px; font-size: 0.9rem; }
+    .theme-toggle { cursor: pointer; font-size: 1.6rem; padding: 6px; }
+    .day-detail { margin-top: 12px; padding: 10px; background: #efe0ce; border-radius: 30px; font-size: 0.9rem; text-align: center; }
+    body.dark .day-detail { background: #4e4132; }
+    .action-row { display: flex; gap: 10px; margin-top: 10px; }
+    .location-stat-item {
+      background: #fff6e8; border-radius: 20px; padding: 10px 14px; margin-bottom: 8px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    body.dark .location-stat-item { background: #3b2e20; }
+    .collapse-toggle { cursor: pointer; font-size: 1.2rem; margin-left: 8px; }
+    .collapsible-content { transition: max-height 0.2s; overflow: hidden; }
+    .delete-last-btn {
+      background: transparent;
+      border: 1px dashed #a5712e;
+      color: #a5712e;
+      margin-top: 6px;
+      padding: 8px 12px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      width: 100%;
+      transition: 0.1s;
+    }
+    body.dark .delete-last-btn { color: #d4a96a; border-color: #d4a96a; }
+    .delete-last-btn:active { background: rgba(165,113,46,0.1); }
+    
+    /* Header Tip Button */
+    .header-tip-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #FFDD00;
+      color: #000000;
+      padding: 8px 14px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: 0 3px 0 #CC9900;
+      transition: transform 0.1s;
+      border: 1px solid #E6C200;
+    }
+    body.dark .header-tip-btn {
+      background: #FFD700;
+      box-shadow: 0 3px 0 #B8860B;
+      border-color: #DAA520;
+    }
+    .header-tip-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #CC9900;
+    }
+    body.dark .header-tip-btn:active {
+      box-shadow: 0 1px 0 #B8860B;
+    }
+    
+    /* Header Right Section */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="space-between">
+    <h1><i class="fas fa-beer"></i> PintPal</h1>
+    <div class="header-right">
+      <!-- Tip Jar Button -->
+      <a href="https://buymeacoffee.com/bluish" target="_blank" class="header-tip-btn">
+        <i class="fas fa-beer"></i> 
+        Buy me a pint
+      </a>
+      <!-- Dark Mode Toggle -->
+      <i class="fas fa-moon theme-toggle" id="themeToggle" title="Dark mode"></i>
+    </div>
+  </div>
+  
+  <!-- CURRENT SESSION CARD -->
+  <div class="card">
+    <div class="space-between">
+      <span class="session-badge"><i class="fas fa-clock"></i> <span id="sessionStatus">No session</span></span>
+      <span><i class="fas fa-map-pin"></i> <span id="currentLocationPreview">—</span></span>
+    </div>
+    <div class="flex-row" style="margin-top: 8px;">
+      <div>
+        <div class="timer" id="sessionTimer">00:00</div>
+        <div style="font-size:0.85rem;">started <span id="startTimeDisplay">--:--</span></div>
+      </div>
+      <div style="margin-left: auto; text-align: right;">
+        <span class="drink-counter-large" id="pintEquivalent">0.0</span><span class="unit">pints</span>
+      </div>
+    </div>
+    <div class="live-avg">
+      <i class="fas fa-hourglass-half"></i> Avg: <span id="liveAvgValue">0.0</span> min
+      <span style="margin-left:12px;"><i class="fas fa-tachometer-alt"></i> <span id="paceAdvice">steady</span></span>
+    </div>
+    
+    <div class="size-toggle">
+      <button class="size-btn active" id="sizePintBtn"><i class="fas fa-pint"></i> Pint</button>
+      <button class="size-btn" id="sizeHalfBtn"><i class="fas fa-glass-half"></i> ½ Pint</button>
+    </div>
+    
+    <button class="btn btn-large" id="addDrinkBtn"><i class="fas fa-plus-circle"></i> ADD <span id="drinkSizeLabel">PINT</span></button>
+    
+    <!-- Delete last drink button (only visible when drinks exist) -->
+    <button class="delete-last-btn" id="deleteLastDrinkBtn" style="display: none;"><i class="fas fa-undo-alt"></i> Delete last drink</button>
+    
+    <div class="drink-list" id="drinkListContainer"></div>
+    
+    <div class="action-row">
+      <button class="btn btn-outline" id="clearSessionBtn" style="flex:1;"><i class="fas fa-trash-alt"></i> Clear</button>
+      <button class="btn" id="endSaveBtn" style="flex:2;"><i class="fas fa-save"></i> End & Save</button>
+    </div>
+    
+    <div id="saveLocationPanel" style="display: none; margin-top: 16px;">
+      <input type="text" id="locationInput" class="location-input" placeholder="📍 Pub / location" value="The Local Tap">
+      <div class="flex-row">
+        <button class="btn" id="confirmSaveBtn" style="flex:2;">Save session</button>
+        <button class="btn-outline" id="cancelSaveBtn" style="flex:1;">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- FUN FACT -->
+  <div class="fun-fact" id="funFactBox"><i class="fas fa-lightbulb"></i> <span id="funFactText">Cheers to good times!</span></div>
+  
+  <!-- INSIGHTS CARD -->
+  <div class="card">
+    <div class="insight-selector">
+      <h3 style="margin:0;"><i class="fas fa-chart-pie"></i> Insights</h3>
+      <select id="insightSelect">
+        <option value="calendar" selected>📅 Calendar</option>
+        <option value="pie">🥧 Pie Chart</option>
+        <option value="bar">📊 Bar Chart</option>
+        <option value="locations">📍 Locations</option>
+      </select>
+    </div>
+    
+    <!-- Calendar view -->
+    <div id="insightCalendarView">
+      <div class="calendar-header">
+        <button class="cal-nav-btn" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
+        <span style="font-weight:700; font-size:1.2rem;" id="calendarMonthYear">April 2026</span>
+        <button class="cal-nav-btn" id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button>
+      </div>
+      <div id="calendarContainer"></div>
+      <div id="calendarDayDetail" class="day-detail">👆 Tap a highlighted day</div>
+    </div>
+    <!-- Pie view -->
+    <div id="insightPieView" style="display:none;">
+      <div class="chart-container"><canvas id="pieChart"></canvas></div>
+      <div class="stats-grid" style="margin-top:10px;">
+        <div class="stat-box"><div class="stat-value" id="fullPintsCount">0</div><div class="stat-label">Full</div></div>
+        <div class="stat-box"><div class="stat-value" id="halfPintsCount">0</div><div class="stat-label">Half</div></div>
+      </div>
+    </div>
+    <!-- Bar view -->
+    <div id="insightBarView" style="display:none;">
+      <div class="chart-container"><canvas id="barChart"></canvas></div>
+    </div>
+    <!-- Locations view -->
+    <div id="insightLocationsView" style="display:none;">
+      <div id="locationStatsContainer"></div>
+    </div>
+    
+    <!-- Summary stats -->
+    <div class="stats-grid" style="margin-top:20px;">
+      <div class="stat-box"><div class="stat-value" id="avgDrinksPerSession">0.0</div><div class="stat-label">avg drinks</div></div>
+      <div class="stat-box"><div class="stat-value" id="avgTimeBetween">0</div><div class="stat-label">avg min</div></div>
+      <div class="stat-box"><div class="stat-value" id="totalSessionsCount">0</div><div class="stat-label">sessions</div></div>
+      <div class="stat-box"><div class="stat-value" id="totalPintsLifetime">0.0</div><div class="stat-label">total pints</div></div>
+    </div>
+    <div class="flex-row" style="justify-content: space-around; margin-top: 8px;">
+      <div><span class="streak-badge"><i class="fas fa-trophy"></i> Best: <span id="bestSessionPints">0.0</span> pints</span></div>
+      <div><span class="streak-badge"><i class="fas fa-fire"></i> Streak: <span id="dayStreak">0</span> days</span></div>
+    </div>
+  </div>
+  
+  <!-- PAST SESSIONS (collapsible) -->
+  <div class="card">
+    <div class="space-between">
+      <h3 style="display: flex; align-items: center; gap: 6px;">
+        <i class="fas fa-history"></i> Past sessions
+        <i class="fas fa-chevron-down collapse-toggle" id="togglePastSessions" style="font-size:1rem;"></i>
+      </h3>
+      <button class="btn-outline btn-icon" id="clearAllSessionsBtn"><i class="fas fa-eraser"></i> Clear all</button>
+    </div>
+    <div id="pastSessionsCollapsible" class="collapsible-content">
+      <div id="pastSessionsList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    "use strict";
+    
+    const STORAGE_CURRENT = 'pintCounter_current';
+    const STORAGE_SAVED = 'pintCounter_saved';
+    
+    let currentSession = { id: null, startTime: null, drinks: [], location: null };
+    let savedSessions = [];
+    let selectedSize = 'pint';
+    let timerInterval = null;
+    let pieChartInstance = null, barChartInstance = null;
+    let pastSessionsCollapsed = false;
+    
+    // Calendar state
+    let displayYear = new Date().getFullYear();
+    let displayMonth = new Date().getMonth();
+    
+    const funFacts = [
+      "🍺 A pint a day keeps the doctor away? Not exactly, but cheers!",
+      "📏 A half pint is 284ml in the UK. Good to know.",
+      "⏱️ The average time between pints here is a stat worth watching!",
+      "🌍 You've been to some fine establishments.",
+      "🤓 Did you know? The world's oldest known beer recipe is 3,900 years old.",
+      "🍻 Sharing is caring, but tracking is fun!",
+      "🎯 Consistency is key. Keep that average steady.",
+      "🔥 Keep the streak alive!"
+    ];
+    
+    // ---------- HELPERS ----------
+    function calcTotalPints(drinks) { return drinks.reduce((sum, d) => sum + (d.size==='pint'?1:0.5), 0); }
+    function calcAvgInterval(drinks) {
+      if (drinks.length < 2) return 0;
+      let total = 0;
+      for (let i=1; i<drinks.length; i++) total += (new Date(drinks[i].timestamp) - new Date(drinks[i-1].timestamp)) / 60000;
+      return total / (drinks.length-1);
+    }
+    function overallAvgInterval() {
+      let total=0, count=0;
+      savedSessions.forEach(s => { if(s.drinks.length>1) for(let i=1;i<s.drinks.length;i++) { total+=(new Date(s.drinks[i].timestamp)-new Date(s.drinks[i-1].timestamp))/60000; count++; }});
+      return count ? total/count : 0;
+    }
+    
+    // ---------- UI UPDATES ----------
+    function updateLiveAvgAndPace() {
+      const val = currentSession.drinks.length>=2 ? calcAvgInterval(currentSession.drinks) : 0;
+      document.getElementById('liveAvgValue').textContent = val.toFixed(1);
+      let pace = 'steady';
+      if (val > 0 && val < 15) pace = '⚡ fast';
+      else if (val > 45) pace = '🐢 slow';
+      else if (val>0) pace = '🚶 steady';
+      document.getElementById('paceAdvice').textContent = `Pace: ${pace}`;
+    }
+    
+    function updateCurrentSessionUI() {
+      const has = !!currentSession.startTime;
+      document.getElementById('sessionStatus').textContent = has ? '🍺 Active' : '⏸️ No session';
+      
+      // Show/hide delete last drink button
+      const deleteBtn = document.getElementById('deleteLastDrinkBtn');
+      deleteBtn.style.display = (has && currentSession.drinks.length > 0) ? 'block' : 'none';
+      
+      if (has) {
+        const start = new Date(currentSession.startTime);
+        document.getElementById('startTimeDisplay').textContent = start.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        document.getElementById('pintEquivalent').textContent = calcTotalPints(currentSession.drinks).toFixed(1);
+        document.getElementById('currentLocationPreview').textContent = currentSession.location || '—';
+        const listDiv = document.getElementById('drinkListContainer');
+        if (currentSession.drinks.length===0) listDiv.innerHTML = '<div style="text-align:center;opacity:0.7;padding:12px;">No drinks yet. Press +</div>';
+        else {
+          listDiv.innerHTML = [...currentSession.drinks].reverse().map(d => 
+            `<div class="drink-item"><span><i class="far fa-clock"></i> ${new Date(d.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'})}</span><span class="drink-size">${d.size==='pint'?'🍺 Pint':'🥃 Half'}</span></div>`
+          ).join('');
+        }
+      } else {
+        document.getElementById('sessionTimer').textContent = '00:00';
+        document.getElementById('startTimeDisplay').textContent = '--:--';
+        document.getElementById('pintEquivalent').textContent = '0.0';
+        document.getElementById('currentLocationPreview').textContent = '—';
+        document.getElementById('drinkListContainer').innerHTML = '<div style="text-align:center;opacity:0.7;padding:12px;">Start by adding a drink</div>';
+      }
+      document.getElementById('drinkSizeLabel').textContent = selectedSize === 'pint' ? 'PINT' : 'HALF PINT';
+    }
+    
+    function updateTimerDisplay() {
+      if (!currentSession.startTime) return;
+      const diff = new Date() - new Date(currentSession.startTime);
+      const s = Math.floor(diff/1000);
+      const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+      document.getElementById('sessionTimer').textContent = `${h>0?h.toString().padStart(2,'0')+':':''}${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+    }
+    
+    function updateStatsAndCharts() {
+      const total = savedSessions.length;
+      let drinksTotal=0, pintsTotal=0, full=0, half=0;
+      savedSessions.forEach(s => {
+        drinksTotal += s.drinks.length;
+        pintsTotal += calcTotalPints(s.drinks);
+        s.drinks.forEach(d => d.size==='pint'? full++ : half++);
+      });
+      document.getElementById('avgDrinksPerSession').textContent = total ? (drinksTotal/total).toFixed(1) : '0.0';
+      document.getElementById('avgTimeBetween').textContent = overallAvgInterval().toFixed(1);
+      document.getElementById('totalSessionsCount').textContent = total;
+      document.getElementById('totalPintsLifetime').textContent = pintsTotal.toFixed(1);
+      document.getElementById('fullPintsCount').textContent = full;
+      document.getElementById('halfPintsCount').textContent = half;
+      
+      if(pieChartInstance) pieChartInstance.destroy();
+      const pieCtx = document.getElementById('pieChart').getContext('2d');
+      pieChartInstance = new Chart(pieCtx, { type:'pie', data:{ labels: full+half?['Full','Half']:['No data'], datasets:[{ data: full+half?[full,half]:[1], backgroundColor:['#b88633','#d4a96a'] }] } });
+      
+      if(barChartInstance) barChartInstance.destroy();
+      const last = savedSessions.slice(-6).reverse();
+      const barCtx = document.getElementById('barChart').getContext('2d');
+      barChartInstance = new Chart(barCtx, { type:'bar', data:{ labels: last.length? last.map(s=> new Date(s.startTime).toLocaleDateString([],{month:'short',day:'numeric'})) : ['No sessions'], datasets:[{ label:'drinks', data: last.map(s=>s.drinks.length), backgroundColor:'#a5712e' }] }, options:{ scales:{ y:{ beginAtZero:true, stepSize:1 } } } });
+    }
+    
+    function renderLocationStats() {
+      const container = document.getElementById('locationStatsContainer');
+      if (!savedSessions.length) {
+        container.innerHTML = '<div style="text-align:center;opacity:0.7;padding:12px;">No sessions to show location stats.</div>';
+        return;
+      }
+      const locMap = new Map();
+      savedSessions.forEach(s => {
+        const loc = s.location?.trim() || 'Unknown';
+        if (!locMap.has(loc)) locMap.set(loc, { sessionIds: new Set(), totalPints: 0 });
+        const entry = locMap.get(loc);
+        entry.sessionIds.add(s.id);
+        entry.totalPints += calcTotalPints(s.drinks);
+      });
+      const sorted = Array.from(locMap.entries()).sort((a,b) => b[1].sessionIds.size - a[1].sessionIds.size);
+      let html = '';
+      sorted.forEach(([loc, data]) => {
+        const sessionCount = data.sessionIds.size;
+        const avgPints = (data.totalPints / sessionCount).toFixed(1);
+        html += `<div class="location-stat-item">
+          <div><i class="fas fa-map-marker-alt"></i> ${loc}<br><small>${sessionCount} session${sessionCount!==1?'s':''}</small></div>
+          <div style="font-weight:700;">${avgPints} pints/session</div>
+        </div>`;
+      });
+      container.innerHTML = html || '<div>No location data.</div>';
+    }
+    
+    function renderCalendar() {
+      const year = displayYear, month = displayMonth;
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month+1, 0).getDate();
+      const drinkMap = new Map();
+      savedSessions.forEach(s => s.drinks.forEach(d => {
+        const date = new Date(d.timestamp);
+        if(date.getFullYear()===year && date.getMonth()===month) {
+          const day = date.getDate();
+          drinkMap.set(day, (drinkMap.get(day)||0) + (d.size==='pint'?1:0.5));
+        }
+      }));
+      
+      const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      document.getElementById('calendarMonthYear').textContent = `${monthNames[month]} ${year}`;
+      
+      let html = `<div class="calendar-grid">`;
+      ['S','M','T','W','T','F','S'].forEach(d=> html+=`<div class="cal-day-header">${d}</div>`);
+      let day=1;
+      for(let i=0; i<6; i++) {
+        for(let j=0; j<7; j++) {
+          if(i===0 && j<firstDay) html+=`<div class="cal-day" style="background:transparent;"></div>`;
+          else if(day>daysInMonth) html+=`<div class="cal-day" style="background:transparent;"></div>`;
+          else {
+            const has = drinkMap.has(day);
+            const todayClass = (day===new Date().getDate() && month===new Date().getMonth() && year===new Date().getFullYear()) ? 'today' : '';
+            html += `<div class="cal-day ${has?'has-drinks':''} ${todayClass}" data-day="${day}" data-pints="${drinkMap.get(day)||0}">${day}</div>`;
+            day++;
+          }
+        }
+      }
+      html += `</div>`;
+      document.getElementById('calendarContainer').innerHTML = html;
+      document.querySelectorAll('.cal-day.has-drinks').forEach(el => {
+        el.addEventListener('click', (e) => {
+          const d = e.currentTarget.dataset.day;
+          const pints = parseFloat(e.currentTarget.dataset.pints).toFixed(1);
+          document.getElementById('calendarDayDetail').innerHTML = `📅 ${monthNames[month].slice(0,3)} ${d}, ${year}: ${pints} pints 🍺`;
+        });
+      });
+    }
+    
+    function updateBestAndStreak() {
+      let best = 0;
+      savedSessions.forEach(s => best = Math.max(best, calcTotalPints(s.drinks)));
+      document.getElementById('bestSessionPints').textContent = best.toFixed(1);
+      
+      const drinkDays = new Set();
+      savedSessions.forEach(s => s.drinks.forEach(d => drinkDays.add(new Date(d.timestamp).toDateString())));
+      let streak = 0, check = new Date();
+      while (drinkDays.has(check.toDateString())) { streak++; check.setDate(check.getDate()-1); }
+      document.getElementById('dayStreak').textContent = streak;
+    }
+    
+    function updateFunFact() {
+      const f = document.getElementById('funFactText');
+      f.textContent = currentSession.drinks.length ? funFacts[Math.floor(Math.random()*funFacts.length)] : "🍻 Press + to start your session!";
+    }
+    
+    // Adjust collapsible height after content change
+    function updateCollapsibleHeight() {
+      const content = document.getElementById('pastSessionsCollapsible');
+      if (!pastSessionsCollapsed) {
+        content.style.maxHeight = content.scrollHeight + 'px';
+      }
+    }
+    
+    function fullUIUpdate() {
+      updateCurrentSessionUI();
+      updateStatsAndCharts();
+      renderPastSessions();
+      updateFunFact();
+      renderCalendar();
+      renderLocationStats();
+      updateLiveAvgAndPace();
+      updateBestAndStreak();
+      updateCollapsibleHeight();
+    }
+    
+    // ---------- PERSISTENCE ----------
+    function saveToStorage() {
+      localStorage.setItem(STORAGE_CURRENT, JSON.stringify(currentSession));
+      localStorage.setItem(STORAGE_SAVED, JSON.stringify(savedSessions));
+    }
+    function loadFromStorage() {
+      const c = localStorage.getItem(STORAGE_CURRENT);
+      currentSession = c ? JSON.parse(c) : { id: null, startTime: null, drinks: [], location: null };
+      const s = localStorage.getItem(STORAGE_SAVED);
+      savedSessions = s ? JSON.parse(s) : [];
+      if (!currentSession.drinks) currentSession.drinks = [];
+    }
+    function resetCurrentSession() {
+      currentSession = { id: null, startTime: null, drinks: [], location: null };
+      stopTimer();
+    }
+    
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+    function startTimer() {
+      stopTimer();
+      if (currentSession.startTime) {
+        timerInterval = setInterval(updateTimerDisplay, 500);
+      }
+    }
+    
+    // ---------- ACTIONS ----------
+    function ensureSession() {
+      if(!currentSession.startTime) {
+        currentSession.id = 'sess_'+Date.now();
+        currentSession.startTime = new Date().toISOString();
+        startTimer();
+        saveToStorage();
+      }
+    }
+    function addDrink() {
+      ensureSession();
+      currentSession.drinks.push({ timestamp: new Date().toISOString(), size: selectedSize });
+      saveToStorage(); fullUIUpdate();
+      const btn = document.getElementById('addDrinkBtn');
+      btn.style.transform = 'scale(0.98)';
+      setTimeout(()=> btn.style.transform = '', 100);
+    }
+    function deleteLastDrink() {
+      if (!currentSession.startTime || currentSession.drinks.length === 0) return;
+      currentSession.drinks.pop();
+      if (currentSession.drinks.length === 0) {
+        // If no drinks left, optionally reset session? Keep session alive.
+      }
+      saveToStorage();
+      fullUIUpdate();
+    }
+    function clearCurrentSession() { 
+      if(confirm('Discard current session?')) { 
+        resetCurrentSession(); 
+        saveToStorage(); 
+        fullUIUpdate(); 
+        stopTimer();
+      } 
+    }
+    function saveCurrentSession(loc) {
+      if(!currentSession.startTime || currentSession.drinks.length===0) { alert('No drinks to save'); return false; }
+      savedSessions.push({ ...currentSession, location: loc||'Somewhere', endTime: new Date().toISOString() });
+      resetCurrentSession(); 
+      saveToStorage(); 
+      fullUIUpdate(); 
+      stopTimer();
+      return true;
+    }
+    function deleteSavedSession(id) { 
+      savedSessions = savedSessions.filter(s=>s.id!==id); 
+      saveToStorage(); 
+      fullUIUpdate(); 
+    }
+    function clearAllSaved() { 
+      if(confirm('Delete all saved sessions?')) { 
+        savedSessions = []; 
+        saveToStorage(); 
+        fullUIUpdate(); 
+      } 
+    }
+    
+    function renderPastSessions() {
+      const container = document.getElementById('pastSessionsList');
+      if (!savedSessions.length) { 
+        container.innerHTML = '<div style="opacity:0.7; padding:10px;">No saved sessions yet.</div>'; 
+        return; 
+      }
+      container.innerHTML = [...savedSessions].reverse().map(s => `
+        <div class="past-session-item">
+          <div><i class="fas fa-calendar"></i> ${new Date(s.startTime).toLocaleDateString()} · ${s.location||'Unknown'}<br><small>${s.drinks.length} drinks · ${calcTotalPints(s.drinks).toFixed(1)} pints</small></div>
+          <button class="btn-outline" style="padding:8px 12px;" onclick="window.deleteSavedSession('${s.id}')"><i class="fas fa-times"></i></button>
+        </div>
+      `).join('');
+      updateCollapsibleHeight();
+    }
+    window.deleteSavedSession = deleteSavedSession;
+    
+    function togglePastSessions() {
+      pastSessionsCollapsed = !pastSessionsCollapsed;
+      const content = document.getElementById('pastSessionsCollapsible');
+      const icon = document.querySelector('#togglePastSessions');
+      if (pastSessionsCollapsed) {
+        content.style.maxHeight = '0';
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-right');
+      } else {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        icon.classList.remove('fa-chevron-right');
+        icon.classList.add('fa-chevron-down');
+      }
+    }
+    
+    function switchInsight(view) {
+      document.getElementById('insightCalendarView').style.display = view==='calendar'?'block':'none';
+      document.getElementById('insightPieView').style.display = view==='pie'?'block':'none';
+      document.getElementById('insightBarView').style.display = view==='bar'?'block':'none';
+      document.getElementById('insightLocationsView').style.display = view==='locations'?'block':'none';
+      if(view==='calendar') renderCalendar();
+      if(view==='pie' || view==='bar') updateStatsAndCharts();
+      if(view==='locations') renderLocationStats();
+    }
+    
+    function changeMonth(delta) {
+      displayMonth += delta;
+      if (displayMonth < 0) { displayMonth = 11; displayYear--; }
+      else if (displayMonth > 11) { displayMonth = 0; displayYear++; }
+      renderCalendar();
+    }
+    
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+      const icon = document.querySelector('#themeToggle i') || document.querySelector('#themeToggle');
+      const isDark = document.body.classList.contains('dark');
+      if (icon.classList) {
+        icon.classList.toggle('fa-moon', !isDark);
+        icon.classList.toggle('fa-sun', isDark);
+      }
+      localStorage.setItem('pintpal_theme', isDark?'dark':'light');
+    }
+    
+    // ---------- INIT ----------
+    function init() {
+      loadFromStorage();
+      const savedTheme = localStorage.getItem('pintpal_theme');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark');
+        const themeIcon = document.querySelector('#themeToggle');
+        if (themeIcon) {
+          themeIcon.classList.remove('fa-moon');
+          themeIcon.classList.add('fa-sun');
+        }
+      }
+      
+      fullUIUpdate();
+      if (currentSession.startTime) startTimer();
+      
+      const content = document.getElementById('pastSessionsCollapsible');
+      content.style.maxHeight = content.scrollHeight + 'px';
+      
+      document.getElementById('sizePintBtn').onclick = ()=>{ selectedSize='pint'; document.getElementById('sizePintBtn').classList.add('active'); document.getElementById('sizeHalfBtn').classList.remove('active'); document.getElementById('drinkSizeLabel').textContent='PINT'; };
+      document.getElementById('sizeHalfBtn').onclick = ()=>{ selectedSize='half'; document.getElementById('sizeHalfBtn').classList.add('active'); document.getElementById('sizePintBtn').classList.remove('active'); document.getElementById('drinkSizeLabel').textContent='HALF PINT'; };
+      document.getElementById('addDrinkBtn').onclick = addDrink;
+      document.getElementById('deleteLastDrinkBtn').onclick = deleteLastDrink;
+      document.getElementById('clearSessionBtn').onclick = clearCurrentSession;
+      
+      const panel = document.getElementById('saveLocationPanel');
+      const locationInput = document.getElementById('locationInput');
+      
+      document.getElementById('endSaveBtn').onclick = ()=>{ 
+        if(!currentSession.startTime) alert('No active session'); 
+        else { 
+          panel.style.display='block'; 
+          locationInput.value = currentSession.location||'The Local Tap';
+          locationInput.focus();
+        } 
+      };
+      document.getElementById('cancelSaveBtn').onclick = ()=> panel.style.display='none';
+      document.getElementById('confirmSaveBtn').onclick = ()=>{ 
+        const loc = locationInput.value.trim(); 
+        if(!loc) alert('Enter location'); 
+        else if(saveCurrentSession(loc)) panel.style.display='none'; 
+      };
+      document.getElementById('clearAllSessionsBtn').onclick = clearAllSaved;
+      
+      const select = document.getElementById('insightSelect');
+      select.onchange = (e) => switchInsight(e.target.value);
+      switchInsight('calendar');
+      
+      document.getElementById('prevMonthBtn').onclick = () => changeMonth(-1);
+      document.getElementById('nextMonthBtn').onclick = () => changeMonth(1);
+      document.getElementById('themeToggle').onclick = toggleTheme;
+      document.getElementById('togglePastSessions').onclick = togglePastSessions;
+    }
+    
+    init();
+  })();
+  
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/pintpal/sw.js', { scope: '/pintpal/' })
+        .then((registration) => {
+          console.log('🍺 PintPal SW registered:', registration.scope);
+        })
+        .catch((error) => {
+          console.log('🍺 PintPal SW registration failed:', error);
+        });
+    });
+  }
+</script>
+
+</body>
+</html>

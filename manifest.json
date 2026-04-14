@@ -1,0 +1,143 @@
+{
+  "id": "https://bluishxp-byte.github.io/pintpal/",
+  "name": "PintPal · Beer Tracker",
+  "short_name": "PintPal",
+  "description": "Track your pints, discover your pace, and relive every session.",
+  "start_url": "/pintpal/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "theme_color": "#b88633",
+  "background_color": "#f9f3e8",
+  
+  "icons": [
+    {
+      "src": "/pintpal/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pintpal/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pintpal/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/pintpal/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  
+  "screenshots": [
+    {
+      "src": "/pintpal/screenshots/iphone-screen-1.png",
+      "sizes": "1284x2778",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Active session tracking"
+    },
+    {
+      "src": "/pintpal/screenshots/iphone-screen-2.png",
+      "sizes": "1284x2778",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Stats and insights view"
+    },
+    {
+      "src": "/pintpal/screenshots/iphone-screen-3.png",
+      "sizes": "1284x2778",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Past sessions history"
+    },
+    {
+      "src": "/pintpal/screenshots/ipad-screen-1.png",
+      "sizes": "2048x2732",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Active session tracking (Tablet)"
+    },
+    {
+      "src": "/pintpal/screenshots/ipad-screen-2.png",
+      "sizes": "2048x2732",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Stats and insights view (Tablet)"
+    },
+    {
+      "src": "/pintpal/screenshots/ipad-screen-3.png",
+      "sizes": "2048x2732",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Past sessions history (Tablet)"
+    },
+    {
+      "src": "/pintpal/screenshots/android-phone-screen-1.png",
+      "sizes": "1440x2960",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Active session tracking"
+    },
+    {
+      "src": "/pintpal/screenshots/android-phone-screen-2.png",
+      "sizes": "1440x2960",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Stats and insights view"
+    },
+    {
+      "src": "/pintpal/screenshots/android-phone-screen-3.png",
+      "sizes": "1440x2960",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Past sessions history"
+    },
+    {
+      "src": "/pintpal/screenshots/android-tablet-screen-1.png",
+      "sizes": "2000x3000",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Active session tracking (Tablet)"
+    },
+    {
+      "src": "/pintpal/screenshots/android-tablet-screen-2.png",
+      "sizes": "2000x3000",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Stats and insights view (Tablet)"
+    },
+    {
+      "src": "/pintpal/screenshots/android-tablet-screen-3.png",
+      "sizes": "2000x3000",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Past sessions history (Tablet)"
+    }
+  ],
+  
+  "categories": ["lifestyle", "food", "health"],
+  
+  "shortcuts": [
+    {
+      "name": "New Session",
+      "short_name": "Session",
+      "description": "Start tracking a new session",
+      "url": "/pintpal/",
+      "icons": [{ "src": "/pintpal/shortcut-beer.png", "sizes": "96x96" }]
+    }
+  ],
+  
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "/pintpal/",
+  "prefer_related_applications": false
+}
