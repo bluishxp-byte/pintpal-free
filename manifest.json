@@ -1,9 +1,9 @@
 {
-  "id": "https://bluishxp-byte.github.io/pintpal/",
-  "name": "PintPal · Beer Tracker",
-  "short_name": "PintPal",
-  "description": "Track your pints, discover your pace, and relive every session.",
-  "start_url": "/pintpal/",
+  "id": "https://bluishxp-byte.github.io/pintpal-free/",
+  "name": "PintPal Free · Beer Tracker",
+  "short_name": "PintPal Free",
+  "description": "Track your pints for free. Contains ads. Upgrade to Pro for an ad-free experience.",
+  "start_url": "/pintpal-free/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "orientation": "portrait",
@@ -12,25 +12,25 @@
   
   "icons": [
     {
-      "src": "/pintpal/icon-192.png",
+      "src": "/pintpal-free/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/pintpal/icon-512.png",
+      "src": "/pintpal-free/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/pintpal/icon-maskable-192.png",
+      "src": "/pintpal-free/icon-maskable-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/pintpal/icon-maskable-512.png",
+      "src": "/pintpal-free/icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -39,88 +39,88 @@
   
   "screenshots": [
     {
-      "src": "/pintpal/screenshots/iphone-screen-1.png",
+      "src": "/pintpal-free/screenshots/iphone-screen-1.png",
       "sizes": "1284x2778",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Active session tracking"
+      "label": "Active session tracking (Free)"
     },
     {
-      "src": "/pintpal/screenshots/iphone-screen-2.png",
+      "src": "/pintpal-free/screenshots/iphone-screen-2.png",
       "sizes": "1284x2778",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Stats and insights view"
     },
     {
-      "src": "/pintpal/screenshots/iphone-screen-3.png",
+      "src": "/pintpal-free/screenshots/iphone-screen-3.png",
       "sizes": "1284x2778",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Past sessions history"
     },
     {
-      "src": "/pintpal/screenshots/ipad-screen-1.png",
+      "src": "/pintpal-free/screenshots/ipad-screen-1.png",
       "sizes": "2048x2732",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Active session tracking (Tablet)"
+      "label": "Active session tracking - Tablet"
     },
     {
-      "src": "/pintpal/screenshots/ipad-screen-2.png",
+      "src": "/pintpal-free/screenshots/ipad-screen-2.png",
       "sizes": "2048x2732",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Stats and insights view (Tablet)"
+      "label": "Stats and insights - Tablet"
     },
     {
-      "src": "/pintpal/screenshots/ipad-screen-3.png",
+      "src": "/pintpal-free/screenshots/ipad-screen-3.png",
       "sizes": "2048x2732",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Past sessions history (Tablet)"
+      "label": "Past sessions history - Tablet"
     },
     {
-      "src": "/pintpal/screenshots/android-phone-screen-1.png",
+      "src": "/pintpal-free/screenshots/android-phone-screen-1.png",
       "sizes": "1440x2960",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Active session tracking"
     },
     {
-      "src": "/pintpal/screenshots/android-phone-screen-2.png",
+      "src": "/pintpal-free/screenshots/android-phone-screen-2.png",
       "sizes": "1440x2960",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Stats and insights view"
     },
     {
-      "src": "/pintpal/screenshots/android-phone-screen-3.png",
+      "src": "/pintpal-free/screenshots/android-phone-screen-3.png",
       "sizes": "1440x2960",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Past sessions history"
     },
     {
-      "src": "/pintpal/screenshots/android-tablet-screen-1.png",
+      "src": "/pintpal-free/screenshots/android-tablet-screen-1.png",
       "sizes": "2000x3000",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Active session tracking (Tablet)"
+      "label": "Active session tracking - Tablet"
     },
     {
-      "src": "/pintpal/screenshots/android-tablet-screen-2.png",
+      "src": "/pintpal-free/screenshots/android-tablet-screen-2.png",
       "sizes": "2000x3000",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Stats and insights view (Tablet)"
+      "label": "Stats and insights - Tablet"
     },
     {
-      "src": "/pintpal/screenshots/android-tablet-screen-3.png",
+      "src": "/pintpal-free/screenshots/android-tablet-screen-3.png",
       "sizes": "2000x3000",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Past sessions history (Tablet)"
+      "label": "Past sessions history - Tablet"
     }
   ],
   
@@ -131,13 +131,13 @@
       "name": "New Session",
       "short_name": "Session",
       "description": "Start tracking a new session",
-      "url": "/pintpal/",
-      "icons": [{ "src": "/pintpal/shortcut-beer.png", "sizes": "96x96" }]
+      "url": "/pintpal-free/",
+      "icons": [{ "src": "/pintpal-free/shortcut-beer.png", "sizes": "96x96" }]
     }
   ],
   
   "lang": "en",
   "dir": "ltr",
-  "scope": "/pintpal/",
+  "scope": "/pintpal-free/",
   "prefer_related_applications": false
 }
