@@ -3,11 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>🍺 PintPal · Tracker</title>
-  <link rel="manifest" href="/pintpal/manifest.json">
-  <link rel="apple-touch-icon" href="/pintpal/icon-512.png">
+  <title>🍺 PintPal Free · Tracker</title>
+  <link rel="manifest" href="/pintpal-free/manifest.json">
+  <link rel="apple-touch-icon" href="/pintpal-free/icon-512.png">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  
   <style>
     * { box-sizing: border-box; margin: 0; font-family: 'Segoe UI', Roboto, -apple-system, sans-serif; }
     body {
@@ -137,52 +141,71 @@
     body.dark .delete-last-btn { color: #d4a96a; border-color: #d4a96a; }
     .delete-last-btn:active { background: rgba(165,113,46,0.1); }
     
-    /* Header Tip Button */
-    .header-tip-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #FFDD00;
-      color: #000000;
-      padding: 8px 14px;
-      border-radius: 40px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      box-shadow: 0 3px 0 #CC9900;
-      transition: transform 0.1s;
-      border: 1px solid #E6C200;
-    }
-    body.dark .header-tip-btn {
-      background: #FFD700;
-      box-shadow: 0 3px 0 #B8860B;
-      border-color: #DAA520;
-    }
-    .header-tip-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0 #CC9900;
-    }
-    body.dark .header-tip-btn:active {
-      box-shadow: 0 1px 0 #B8860B;
-    }
-    
     /* Header Right Section */
     .header-right {
       display: flex;
       align-items: center;
       gap: 8px;
     }
+    
+    /* Upgrade to Pro Button */
+    .upgrade-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #2c1e0f;
+      padding: 8px 12px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: 0 3px 0 #B8860B;
+      transition: transform 0.1s;
+      border: 1px solid #DAA520;
+    }
+    body.dark .upgrade-btn {
+      background: linear-gradient(135deg, #FFD700, #FF8C00);
+      box-shadow: 0 3px 0 #B8860B;
+    }
+    .upgrade-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #B8860B;
+    }
+    
+    /* Ad Container */
+    .ad-container {
+      margin: 16px 0;
+      text-align: center;
+      min-height: 50px;
+      background: rgba(0,0,0,0.02);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    body.dark .ad-container {
+      background: rgba(255,255,255,0.02);
+    }
+    .ad-label {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.4;
+      margin-bottom: 4px;
+    }
   </style>
 </head>
 <body>
 <div id="app">
   <div class="space-between">
-    <h1><i class="fas fa-beer"></i> PintPal</h1>
+    <h1><i class="fas fa-beer"></i> PintPal <span style="font-size:0.8rem; background:#a5712e; color:white; padding:2px 8px; border-radius:30px; margin-left:4px;">FREE</span></h1>
     <div class="header-right">
-      <!-- Tip Jar Button -->
-      <a href="https://buymeacoffee.com/bluish" target="_blank" class="header-tip-btn">
-        <i class="fas fa-beer"></i> 
-        Buy me a pint
+      <!-- Upgrade to Pro Button -->
+      <a href="https://bluishxp-byte.github.io/pintpal/" target="_blank" class="upgrade-btn">
+        <i class="fas fa-crown"></i> 
+        <span>Go Pro</span>
       </a>
       <!-- Dark Mode Toggle -->
       <i class="fas fa-moon theme-toggle" id="themeToggle" title="Dark mode"></i>
@@ -209,6 +232,19 @@
       <span style="margin-left:12px;"><i class="fas fa-tachometer-alt"></i> <span id="paceAdvice">steady</span></span>
     </div>
     
+    <!-- Ad Slot 1 -->
+    <div class="ad-container">
+      <div style="width:100%;">
+        <div class="ad-label">Advertisement</div>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="1234567890"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+      </div>
+    </div>
+    
     <div class="size-toggle">
       <button class="size-btn active" id="sizePintBtn"><i class="fas fa-pint"></i> Pint</button>
       <button class="size-btn" id="sizeHalfBtn"><i class="fas fa-glass-half"></i> ½ Pint</button>
@@ -216,7 +252,6 @@
     
     <button class="btn btn-large" id="addDrinkBtn"><i class="fas fa-plus-circle"></i> ADD <span id="drinkSizeLabel">PINT</span></button>
     
-    <!-- Delete last drink button (only visible when drinks exist) -->
     <button class="delete-last-btn" id="deleteLastDrinkBtn" style="display: none;"><i class="fas fa-undo-alt"></i> Delete last drink</button>
     
     <div class="drink-list" id="drinkListContainer"></div>
@@ -238,6 +273,19 @@
   <!-- FUN FACT -->
   <div class="fun-fact" id="funFactBox"><i class="fas fa-lightbulb"></i> <span id="funFactText">Cheers to good times!</span></div>
   
+  <!-- Ad Slot 2 -->
+  <div class="ad-container">
+    <div style="width:100%;">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="0987654321"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+    </div>
+  </div>
+  
   <!-- INSIGHTS CARD -->
   <div class="card">
     <div class="insight-selector">
@@ -250,7 +298,6 @@
       </select>
     </div>
     
-    <!-- Calendar view -->
     <div id="insightCalendarView">
       <div class="calendar-header">
         <button class="cal-nav-btn" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
@@ -260,7 +307,6 @@
       <div id="calendarContainer"></div>
       <div id="calendarDayDetail" class="day-detail">👆 Tap a highlighted day</div>
     </div>
-    <!-- Pie view -->
     <div id="insightPieView" style="display:none;">
       <div class="chart-container"><canvas id="pieChart"></canvas></div>
       <div class="stats-grid" style="margin-top:10px;">
@@ -268,11 +314,9 @@
         <div class="stat-box"><div class="stat-value" id="halfPintsCount">0</div><div class="stat-label">Half</div></div>
       </div>
     </div>
-    <!-- Bar view -->
     <div id="insightBarView" style="display:none;">
       <div class="chart-container"><canvas id="barChart"></canvas></div>
     </div>
-    <!-- Locations view -->
     <div id="insightLocationsView" style="display:none;">
       <div id="locationStatsContainer"></div>
     </div>
@@ -303,7 +347,30 @@
       <div id="pastSessionsList"></div>
     </div>
   </div>
+  
+  <!-- Upgrade Banner -->
+  <div style="text-align: center; margin: 16px 0;">
+    <a href="https://bluishxp-byte.github.io/pintpal/" target="_blank" 
+       style="display: inline-flex; align-items: center; gap: 8px; 
+              background: linear-gradient(135deg, #FFD700, #FFA500);
+              color: #2c1e0f; padding: 14px 24px; border-radius: 60px;
+              text-decoration: none; font-weight: 700; font-size: 1rem;
+              box-shadow: 0 4px 0 #B8860B; border: 1px solid #DAA520;">
+      <i class="fas fa-crown"></i> 
+      Upgrade to Pro · Remove Ads · £0.99
+      <i class="fas fa-arrow-right"></i>
+    </a>
+    <p style="font-size:0.7rem; opacity:0.5; margin-top:8px;">
+      One-time purchase · Ad-free forever
+    </p>
+  </div>
 </div>
+
+<script>
+  // Initialize AdSense ads
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 
 <script>
   (function(){
@@ -319,7 +386,6 @@
     let pieChartInstance = null, barChartInstance = null;
     let pastSessionsCollapsed = false;
     
-    // Calendar state
     let displayYear = new Date().getFullYear();
     let displayMonth = new Date().getMonth();
     
@@ -331,10 +397,10 @@
       "🤓 Did you know? The world's oldest known beer recipe is 3,900 years old.",
       "🍻 Sharing is caring, but tracking is fun!",
       "🎯 Consistency is key. Keep that average steady.",
-      "🔥 Keep the streak alive!"
+      "🔥 Keep the streak alive!",
+      "💎 Upgrade to Pro for an ad-free experience!"
     ];
     
-    // ---------- HELPERS ----------
     function calcTotalPints(drinks) { return drinks.reduce((sum, d) => sum + (d.size==='pint'?1:0.5), 0); }
     function calcAvgInterval(drinks) {
       if (drinks.length < 2) return 0;
@@ -348,7 +414,6 @@
       return count ? total/count : 0;
     }
     
-    // ---------- UI UPDATES ----------
     function updateLiveAvgAndPace() {
       const val = currentSession.drinks.length>=2 ? calcAvgInterval(currentSession.drinks) : 0;
       document.getElementById('liveAvgValue').textContent = val.toFixed(1);
@@ -363,7 +428,6 @@
       const has = !!currentSession.startTime;
       document.getElementById('sessionStatus').textContent = has ? '🍺 Active' : '⏸️ No session';
       
-      // Show/hide delete last drink button
       const deleteBtn = document.getElementById('deleteLastDrinkBtn');
       deleteBtn.style.display = (has && currentSession.drinks.length > 0) ? 'block' : 'none';
       
@@ -508,7 +572,6 @@
       f.textContent = currentSession.drinks.length ? funFacts[Math.floor(Math.random()*funFacts.length)] : "🍻 Press + to start your session!";
     }
     
-    // Adjust collapsible height after content change
     function updateCollapsibleHeight() {
       const content = document.getElementById('pastSessionsCollapsible');
       if (!pastSessionsCollapsed) {
@@ -528,7 +591,6 @@
       updateCollapsibleHeight();
     }
     
-    // ---------- PERSISTENCE ----------
     function saveToStorage() {
       localStorage.setItem(STORAGE_CURRENT, JSON.stringify(currentSession));
       localStorage.setItem(STORAGE_SAVED, JSON.stringify(savedSessions));
@@ -558,7 +620,6 @@
       }
     }
     
-    // ---------- ACTIONS ----------
     function ensureSession() {
       if(!currentSession.startTime) {
         currentSession.id = 'sess_'+Date.now();
@@ -578,9 +639,6 @@
     function deleteLastDrink() {
       if (!currentSession.startTime || currentSession.drinks.length === 0) return;
       currentSession.drinks.pop();
-      if (currentSession.drinks.length === 0) {
-        // If no drinks left, optionally reset session? Keep session alive.
-      }
       saveToStorage();
       fullUIUpdate();
     }
@@ -673,7 +731,6 @@
       localStorage.setItem('pintpal_theme', isDark?'dark':'light');
     }
     
-    // ---------- INIT ----------
     function init() {
       loadFromStorage();
       const savedTheme = localStorage.getItem('pintpal_theme');
@@ -729,18 +786,17 @@
     
     init();
   })();
-  
 </script>
 
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/pintpal/sw.js', { scope: '/pintpal/' })
+      navigator.serviceWorker.register('/pintpal-free/sw.js', { scope: '/pintpal-free/' })
         .then((registration) => {
-          console.log('🍺 PintPal SW registered:', registration.scope);
+          console.log('🍺 PintPal Free SW registered:', registration.scope);
         })
         .catch((error) => {
-          console.log('🍺 PintPal SW registration failed:', error);
+          console.log('🍺 PintPal Free SW registration failed:', error);
         });
     });
   }
